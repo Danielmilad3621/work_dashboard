@@ -1,0 +1,12 @@
+node_modules
+dist
+.output
+.tanstack
+.wrangler
+.git
+.lovable
+*.log
+.DS_Store
+.vscode
+.idea
+.cursor
