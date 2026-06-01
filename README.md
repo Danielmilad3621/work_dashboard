@@ -21,7 +21,8 @@ and served in production by a small **Node.js** server.
 5. [Running in development](#running-in-development)
 6. [Building & running in production](#building--running-in-production)
 7. [Running with Docker](#running-with-docker)
-8. [Environment variables](#environment-variables)
+8. [Deploying to Vercel](#deploying-to-vercel)
+9. [Environment variables](#environment-variables)
 9. [Available npm scripts](#available-npm-scripts)
 10. [Project structure](#project-structure)
 11. [How routing & SSR work](#how-routing--ssr-work)
@@ -215,6 +216,53 @@ You can override the port/host at runtime:
 ```bash
 docker run --rm -e PORT=8080 -p 8080:8080 workdashboard
 ```
+
+---
+
+## Deploying to Vercel
+
+Vercel is **serverless** and does not run a long-lived `node server.mjs`
+process, so the app is deployed as a **static SPA** instead of Node SSR. This is
+enabled by SPA mode in `vite.config.ts`:
+
+```ts
+tanstackStart({
+  spa: { enabled: true },
+})
+```
+
+With SPA mode on, `npm run build` prerenders a static HTML shell to
+`dist/client/_shell.html` alongside the client assets. A `vercel.json` at the
+repo root tells Vercel how to serve it:
+
+```json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/client",
+  "rewrites": [{ "source": "/(.*)", "destination": "/_shell.html" }]
+}
+```
+
+- `outputDirectory: dist/client` — Vercel serves the built client assets (not
+  the default `dist/`).
+- The rewrite is a **SPA fallback**: real files (e.g. `/assets/*.js`, images)
+  are served directly, and every other route falls back to the shell so the
+  client router can take over.
+
+### Steps
+
+1. Push your code to GitHub (already done for this repo).
+2. In Vercel, **Add New → Project** and import `Danielmilad3621/work_dashboard`.
+3. Leave the build settings as auto-detected — `vercel.json` already pins the
+   build command and output directory. No environment variables are required.
+4. Deploy. Every push to `main` will redeploy automatically.
+
+> **Why not SSR on Vercel?** This version of TanStack Start (1.167) has no Vercel
+> hosting preset, and every page renders from in-repo mock data with no server
+> functions — so a static SPA is the simplest, most reliable fit. If you later
+> add server-side logic and need true SSR, host the Node build (`npm run start`
+> / the Docker image) on a platform that runs a persistent process (a VPS,
+> Fly.io, Render, Railway, your homelab, etc.).
 
 ---
 

@@ -10,6 +10,11 @@ export default defineConfig({
     tailwindcss(),
     tanstackStart({
       target: "node-server",
+      // SPA mode: prerender a static HTML shell so the app can be served by any
+      // static host (e.g. Vercel) without a long-lived SSR Node process.
+      spa: {
+        enabled: true,
+      },
     }),
     viteReact(),
   ],
