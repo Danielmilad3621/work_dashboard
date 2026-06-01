@@ -6,6 +6,7 @@ This document captures every change made during the Lovable removal so future-yo
 ## What changed
 
 ### Removed
+
 - `.lovable/` directory (Lovable template marker).
 - `bunfig.toml` (Bun config; only existed to whitelist the Lovable package).
 - `bun.lock` (Bun lockfile - we standardised on npm).
@@ -17,6 +18,7 @@ This document captures every change made during the Lovable removal so future-yo
 - "Lovable" meta tags in `src/routes/__root.tsx` (`Lovable App`, `Lovable Generated Project`, `author: Lovable`, `@Lovable`).
 
 ### Added
+
 - `server.mjs` - production Node entry that hosts the Fetch handler emitted at `dist/server/server.js` via `srvx/node`. Reads `PORT` and `HOSTNAME` from env (defaults 3000 and 0.0.0.0).
 - `Dockerfile` - multi-stage build on `node:20-alpine` with HEALTHCHECK against `:3000/`.
 - `.dockerignore` - excludes `node_modules`, `dist`, `.git`, `.cursor`, etc.
@@ -28,33 +30,37 @@ This document captures every change made during the Lovable removal so future-yo
 - `package-lock.json` (replaces `bun.lock`).
 
 ### Rewritten
+
 - `vite.config.ts` - was `defineConfig` from `@lovable.dev/vite-tanstack-config`. Now wires plugins manually: `tsConfigPaths`, `tailwindcss`, `tanstackStart({ target: "node-server" })`, `viteReact`. Resolves dedupe is configured for React 19 + TanStack to avoid duplicate copies.
 
 ## Why these decisions
 
-| Decision | Why |
-|---|---|
-| Node SSR over Cloudflare Workers | Portable - runs anywhere with Node 20+. No wrangler dependency, no edge-only constraints. |
-| npm over Bun | More familiar tooling, plays nicer with corp networks and most CI. |
-| `srvx` over `@hono/node-server` | Same maintainers as h3-v2 (already used by TanStack Start under the hood). One fewer mental model. |
-| Multi-stage Dockerfile | Keeps runtime image small - dev deps and source code stay in the builder stage. |
-| Node 20 Alpine | Smallest official Node image with the LTS we need. |
+| Decision                         | Why                                                                                                |
+| -------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Node SSR over Cloudflare Workers | Portable - runs anywhere with Node 20+. No wrangler dependency, no edge-only constraints.          |
+| npm over Bun                     | More familiar tooling, plays nicer with corp networks and most CI.                                 |
+| `srvx` over `@hono/node-server`  | Same maintainers as h3-v2 (already used by TanStack Start under the hood). One fewer mental model. |
+| Multi-stage Dockerfile           | Keeps runtime image small - dev deps and source code stay in the builder stage.                    |
+| Node 20 Alpine                   | Smallest official Node image with the LTS we need.                                                 |
 
 ## How to run
 
 ### Dev mode
+
 ```bash
 npm install
 npm run dev   # http://localhost:5173
 ```
 
 ### Production (local)
+
 ```bash
 npm run build
 npm run start # http://localhost:3000
 ```
 
 ### Production (Docker)
+
 ```bash
 docker build -t workdashboard .
 docker run --rm -p 3000:3000 workdashboard
@@ -63,6 +69,7 @@ docker run --rm -p 3000:3000 workdashboard
 
 Note: on Apple Silicon Macs, `docker build` produces an `arm64` image by default. If
 you deploy to an `x86_64` host (e.g. most VPS providers), build with:
+
 ```bash
 docker build --platform linux/amd64 -t workdashboard .
 ```

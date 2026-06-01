@@ -12,7 +12,7 @@ Personal work dashboard. React 19 SPA + SSR via TanStack Start, Tailwind v4, Vit
 - Vite 7 + Tailwind CSS 4 (no PostCSS config; `@tailwindcss/vite`)
 - TypeScript strict mode, ESLint, Prettier
 - shadcn/ui components in `src/lib/ui/`
-- Production server: Node 20 + `srvx` (Fetch -> Node adapter)
+- Production server: Node 22 + `srvx` (Fetch -> Node adapter)
 
 ## Scripts
 - `npm run dev` - Vite dev server on http://localhost:5173
@@ -21,8 +21,8 @@ Personal work dashboard. React 19 SPA + SSR via TanStack Start, Tailwind v4, Vit
 - `npm run lint` / `npm run format`
 
 ## Deployment
-- Local: `npm run start` (Node 20+)
-- Docker: see [`Dockerfile`](Dockerfile) (multi-stage, Node 20 Alpine, HEALTHCHECK on :3000)
+- Local: `npm run start` (Node 22.12+)
+- Docker: see [`Dockerfile`](Dockerfile) (multi-stage, Node 22 Alpine, HEALTHCHECK on :3000)
 - NOT Cloudflare Workers anymore (`wrangler.jsonc` and `@cloudflare/vite-plugin` removed).
 
 ## Layout
